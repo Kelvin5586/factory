@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Run Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Factory Run Tracker</h1>
+        <form id="runForm">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            
+            <label for="numberPlate">Car Number Plate:</label>
+            <input type="text" id="numberPlate" required><br>
+            
+            <label for="driverName">Driver Name:</label>
+            <input type="text" id="driverName" required><br>
+            
+            <label for="timeOut">Time Out (HRS):</label>
+            <input type="time" id="timeOut" required>
+            
+            <label for="timeIn">Time In (HRS):</label>
+            <input type="time" id="timeIn" required>
+            
+            <label for="firstRun"> First Run Time in(HRS):</label>
+            <input type="time" id="firstRun" required>
+            <label for="firstRunOut"> Time out First Run(HRS):</label>
+            <input type="time" id="firstRunOut" required><br>
+            
+            <label for="secondRun">Second Run time in (HRS):</label>
+            <input type="time" id="secondRun" required>
+            <label for="secondRunOut">time out Second Run(HRS):</label>
+            <input type="time" id="secondRunOut" required><br>
+            
+            <label for="thirdRun"> Third Run time in(HRS):</label>
+            <input type="time" id="thirdRun" required>
+            <label for="thirdRunOut">time out Third Run(HRS):</label>
+            <input type="time" id="thirdRunOut" required><br>
+
+            <label for="fourthRun"> Fourth Run(HRS)time in:</label>
+            <input type="time" id="fourthRun" required>
+            <label for="fourthRunOut"> Fourth Run(HRS)time out:</label>
+            <input type="time" id="fourthRunOut" required><br>
+            
+            <button type="button" onclick="calculate()">Calculate</button>
+        </form>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Car Number Plate</th>
+                    <th>Driver Name</th>
+                    <th>Time Out (HRS)</th>
+                    <th>Time In (HRS)</th>
+                    <th>First Run In</th>
+                    <th>First Run Out</th>
+                    <th>Second Run In</th>
+                    <th>Second Run Out</th>
+                    <th>Third Run In</th>
+                    <th>Third Run Out</th>
+                    <th>Fourth Run In</th>
+                    <th>Fourth Run Out</th>
+                    <th>Average In Time (MINS)</th>
+                    <th>Time Out in Factory (HRS)</th>
+                    <th>Time in Factory (HRS:MINS)</th>
+                    <th>Time in Factory (MINS)</th>
+                    <th>Average Factory Time (MINS)</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <!-- Results will be inserted here -->
+            </tbody>
+        </table>
+
+        <button onclick="exportToExcel()">Export to Excel</button>
+    </div>
+
+    <script>
+        function calculate() {
+            var date = document.getElementById("date").value;
+            var carNumberPlate = document.getElementById("numberPlate").value;
+            var driverName = document.getElementById("driverName").value;
+            var timeOut = document.getElementById("timeOut").value;
+            var timeIn = document.getElementById("timeIn").value;
+            var firstRunIn = document.getElementById("firstRun").value;
+            var firstRunOut = document.getElementById("firstRunOut").value;
+            var secondRunIn = document.getElementById("secondRun").value;
+            var secondRunOut = document.getElementById("secondRunOut").value;
+            var thirdRunIn = document.getElementById("thirdRun").value;
+            var thirdRunOut = document.getElementById("thirdRunOut").value;
+            var fourthRunIn = document.getElementById("fourthRun").value;
+            var fourthRunOut = document.getElementById("fourthRunOut").value;
+            var timeOutFactory = document.getElementById("timeOutFactory").value;
+            
+            // Sample calculation
+            var averageInTime = calculateAverageInTime(timeIn, firstRunIn, secondRunIn, thirdRunIn, fourthRunIn);
+            //var timeInFactory = calculateTimeInFactory(timeIn, timeOutFactory);
+            var averageFactoryTime = calculateAverageFactoryTime(timeInFactory);
+
+            var result = {
+                date: date,
+                carNumberPlate: carNumberPlate,
+                driverName: driverName,
+                timeOut: timeOut,
+                timeIn: timeIn,
+                firstRunIn: firstRunIn,
+                firstRunOut: firstRunOut,
+                secondRunIn: secondRunIn,
+                secondRunOut: secondRunOut,
+                thirdRunIn: thirdRunIn,
+                thirdRunOut: thirdRunOut,
+                fourthRunIn: fourthRunIn,
+                fourthRunOut: fourthRunOut,
+                averageInTime: averageInTime,
+                timeOutFactory: secondRunOut,
+                timeInFactory: timeInFactory,
+                averageFactoryTime: averageFactoryTime
+            };
+
+            displayResult(result);
+        }
+
+        function calculateAverageInTime(timeIn, firstRunIn, secondRunIn, thirdRunIn, fourthRunIn) {
+            // Sample calculation (in minutes)
+            var totalTime = parseTime(timeIn) + parseTime(firstRunIn) + parseTime(secondRunIn) + parseTime(thirdRunIn) + parseTime(fourthRunIn);
+            var averageTime = totalTime / 5;
+            return averageTime.toFixed(2);
+        }
+
+        function calculateTimeInFactory(timeIn, timeOutFactory) {
+            // Sample calculation (in minutes)
+            var timeInMinutes = parseTime(timeIn);
+            var timeOutFactoryMinutes = parseTime(timeOutFactory);
+            var timeInFactory = timeOutFactoryMinutes - timeInMinutes;
+            return timeInFactory;
+        }
+
+        function calculateAverageFactoryTime(timeInFactory) {
+            // Sample calculation (in minutes)
+            return (timeInFactory / 5).toFixed(2); // Assuming 5 days of data
+        }
+
+        function parseTime(timeString) {
+            // Sample time parsing function
+            var parts = timeString.split(":");
+            var hours = parseInt(parts[0], 10);
+            var minutes = parseInt(parts[1], 10);
+            return hours * 60 + minutes;
+        }
+
+        function displayResult(result) {
+            var tableBody = document.getElementById("resultBody");
+            var newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${result.date}</td>
+                <td>${result.carNumberPlate}</td>
+                <td>${result.driverName}</td>
+                <td>${result.timeOut}</td>
+                <td>${result.timeIn}</td>
+                <td>${result.firstRunIn}</td>
+                <td>${result.firstRunOut}</td>
+                <td>${result.secondRunIn}</td>
+                <td>${result.secondRunOut}</td>
+                <td>${result.thirdRunIn}</td>
+                <td>${result.thirdRunOut}</td>
+                <td>${result.fourthRunIn}</td>
+                <td>${result.fourthRunOut}</td>
+                <td>${result.averageInTime}</td>
+                <td>${result.timeOutFactory}</td>
+                <td>${result.timeInFactory}</td>
+                <td>${result.timeInFactory}</td>
+                <td>${result.averageFactoryTime}</td>
+            `;
+        }
+
+        function exportToExcel() {
+            var table = document.getElementById("resultTable");
+            var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
+            XLSX.writeFile(wb, 'factory_run_data.xlsx');
+        }
+    </script>
+</body>
+</html>
+

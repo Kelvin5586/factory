@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wrong2htm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1An3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            margin-top: 10px;
+        }
+        #runForm {
+            margin-bottom: 20px;
+        }
+        table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Factory Run Tracker</h1>
+        <form id="runForm">
+            <div class="mb-3">
+                <label for="date" class="form-label">Date:</label>
+                <input type="date" id="date" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="numberPlate" class="form-label">Car Number Plate:</label>
+                <input type="text" id="numberPlate" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="driverName" class="form-label">Driver Name:</label>
+                <input type="text" id="driverName" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="firstRunIn" class="form-label">First Run In (HRS):</label>
+                <input type="time" id="firstRunIn" class="form-control" required>
+                <label for="firstRunOut" class="form-label">First Run Out (HRS):</label>
+                <input type="time" id="firstRunOut" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="secondRunIn" class="form-label">Second Run In (HRS):</label>
+                <input type="time" id="secondRunIn" class="form-control" required>
+                <label for="secondRunOut" class="form-label">Second Run Out (HRS):</label>
+                <input type="time" id="secondRunOut" class="form-control" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="thirdRunIn" class="form-label">Third Run In (HRS):</label>
+                <input type="time" id="thirdRunIn" class="form-control">
+                <label for="thirdRunOut" class="form-label">Third Run Out (HRS):</label>
+                <input type="time" id="thirdRunOut" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="fourthRunIn" class="form-label">Fourth Run In (HRS):</label>
+                <input type="time" id="fourthRunIn" class="form-control">
+                <label for="fourthRunOut" class="form-label">Fourth Run Out (HRS):</label>
+                <input type="time" id="fourthRunOut" class="form-control">
+            </div>
+            
+            <button type="button" class="btn btn-primary" onclick="calculate()">Calculate</button>
+        </form>
+
+        <table id="resultTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Car Number Plate</th>
+                    <th>Driver Name</th>
+                    <th>Runs</th>
+                    <th>Time Out (HRS)</th>
+                    <th>Time In (HRS)</th>
+                    <th>Factory Time Out (HRS)</th>
+                    <th>Time Spent in Field (HRS & MINS)</th>
+                    <th>Time Spent in Field (MINS)</th>
+                    <th>Time Spent in Factory (HRS & MINS)</th>
+                    <th>Time Spent in Factory (MINS)</th>
+                    <th>Average Time (MINS)</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <!-- Results will be inserted here -->
+            </tbody>
+        </table>
+
+        <button class="btn btn-success" onclick="exportToExcel()">Export to Excel</button>
+    </div>
+
+    <script>
+        function calculate() {
+            var date = document.getElementById("date").value;
+            var carNumberPlate = document.getElementById("numberPlate").value;
+            var driverName = document.getElementById("driverName").value;
+            var firstRunIn = document.getElementById("firstRunIn").value;
+            var firstRunOut = document.getElementById("firstRunOut").value;
+            var secondRunIn = document.getElementById("secondRunIn").value;
+            var secondRunOut = document.getElementById("secondRunOut").value;
+            var thirdRunIn = document.getElementById("thirdRunIn").value;
+            var thirdRunOut = document.getElementById("thirdRunOut").value;
+            var fourthRunIn = document.getElementById("fourthRunIn").value;
+            var fourthRunOut = document.getElementById("fourthRunOut").value;
+            
+            var firstTimeSpentInField = calculateTimeInMinutes(firstRunOut, firstRunIn);
+            var secondTimeSpentInField = calculateTimeInMinutes(secondRunOut, secondRunIn);
+            var thirdTimeSpentInField = thirdRunIn && thirdRunOut ? calculateTimeInMinutes(thirdRunOut, thirdRunIn) : 0;
+            var fourthTimeSpentInField = fourthRunIn && fourthRunOut ? calculateTimeInMinutes(fourthRunOut, fourthRunIn) : 0;
+
+            var factoryTimeOutSecond = secondRunOut;
+            var factoryTimeOutThird = thirdRunOut;
+            var factoryTimeOutFourth = fourthRunOut;
+
+            var timeSpentInFactorySecond = calculateTimeInMinutes(secondRunOut, firstRunIn);
+            var timeSpentInFactoryThird = thirdRunOut && thirdRunIn ? calculateTimeInMinutes(thirdRunOut, secondRunIn) : 0;
+            var timeSpentInFactoryFourth = fourthRunIn && fourthRunOut ? calculateTimeInMinutes(fourthRunOut, thirdRunIn) : 0;
+
+            var totalFactoryTimeMins = timeSpentInFactorySecond + timeSpentInFactoryThird + timeSpentInFactoryFourth;
+            var numFactoryIntervals = 1 + (thirdRunIn && thirdRunOut ? 1 : 0) + (fourthRunIn && fourthRunOut ? 1 : 0);
+            var averageFactoryTimeMins = (totalFactoryTimeMins / numFactoryIntervals).toFixed(2);
+
+            var totalFieldTimeMins = firstTimeSpentInField + secondTimeSpentInField + thirdTimeSpentInField + fourthTimeSpentInField;
+            var totalFieldHours = totalFieldTimeMins /60;
+            var diversionStatus = totalFieldHours > 10 ? "DIVERSION" : "";
+
+            var result = {
+                date: date,
+                carNumberPlate: carNumberPlate,
+                driverName: driverName,
+                runs: "First, Second" + (thirdRunIn && thirdRunOut ? ", Third" : "") + (fourthRunIn && fourthRunOut ? ", Fourth" : ""),
+                timeOutHrs: `${firstRunOut}, ${secondRunOut}` + (thirdRunIn && thirdRunOut ? `, ${thirdRunOut}` : "") + (fourthRunIn && fourthRunOut ? `, ${fourthRunOut}` : ""),
+                timeInHrs: `${firstRunIn}, ${secondRunIn}` + (thirdRunIn && thirdRunOut ? `, ${thirdRunIn}` : "") + (fourthRunIn && fourthRunOut ? `, ${fourthRunIn}` : ""),
+                factoryOutTime: `${factoryTimeOutSecond}` + (thirdRunIn && thirdRunOut ? `, ${factoryTimeOutThird}` : "") + (fourthRunIn && fourthRunOut ? `, ${factoryTimeOutFourth}` : ""),
+                timeInFieldHrsMins: `${formatTime(firstTimeSpentInField)}, ${formatTime(secondTimeSpentInField)}` + (thirdRunIn && thirdRunOut ? `, ${formatTime(thirdTimeSpentInField)}` : "") + (fourthRunIn && fourthRunOut ? `, ${formatTime(fourthTimeSpentInField
+                    )}` : ""),
+                timeInFieldMins: `${firstTimeSpentInField}, ${secondTimeSpentInField}` + (thirdRunIn && thirdRunOut ? `, ${thirdTimeSpentInField}` : "") + (fourthRunIn && fourthRunOut ? `, ${fourthTimeSpentInField}` : ""),
+                timeInFactoryHrsMins: `${formatTime(timeSpentInFactorySecond)}` + (thirdRunIn && thirdRunOut ? `, ${formatTime(timeSpentInFactoryThird)}` : "") + (fourthRunIn && fourthRunOut ? `, ${formatTime(timeSpentInFactoryFourth)}` : ""),
+                timeInFactoryMins: `${timeSpentInFactorySecond}` + (thirdRunIn && thirdRunOut ? `, ${timeSpentInFactoryThird}` : "") + (fourthRunIn && fourthRunOut ? `, ${timeSpentInFactoryFourth}` : ""),
+                averageFactoryTimeMins: averageFactoryTimeMins,
+                diversionStatus: diversionStatus
+            };
+
+            displayResult(result);
+        }
+
+        function calculateTimeInMinutes(timeOut, timeIn) {
+            var timeOutParts = timeOut.split(":");
+            var timeInParts = timeIn.split(":");
+            var timeOutHrs = parseInt(timeOutParts[0]);
+            var timeOutMins = parseInt(timeOutParts[1]);
+            var timeInHrs = parseInt(timeInParts[0]);
+            var timeInMins = parseInt(timeInParts[1]);
+
+            var totalTimeOutMins = timeOutHrs * 60 + timeOutMins;
+            var totalTimeInMins = timeInHrs * 60 + timeInMins;
+
+            return totalTimeOutMins - totalTimeInMins;
+        }
+
+        function formatTime(minutes) {
+            var hours = Math.floor(minutes / 60);
+            var mins = minutes % 60;
+            return `${hours}hrs ${mins}mins`;
+        }
+
+        function displayResult(result) {
+            var tableBody = document.getElementById("resultBody");
+            var newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${result.date}</td>
+                <td>${result.carNumberPlate}</td>
+                <td>${result.driverName}</td>
+                <td>${result.runs}</td>
+                <td>${result.timeOutHrs}</td>
+                <td>${result.timeInHrs}</td>
+                <td>${result.factoryOutTime}</td>
+                <td>${result.timeInFieldHrsMins}</td>
+                <td>${result.timeInFieldMins}</td>
+                <td>${result.timeInFactoryHrsMins}</td>
+                <td>${result.timeInFactoryMins}</td>
+                <td>${result.averageFactoryTimeMins} ${result.diversionStatus}</td>
+            `;
+        }
+        function exportToExcel(date, tableBody) {
+    var dateObj = new Date(date);
+    var month = dateObj.toLocaleString('default', { month: 'long' });
+    var year = dateObj.getFullYear();
+    var sheetName = `${month} ${year}`;
+
+    // Create a new workbook or load the existing one
+    var wb;
+    if (localStorage.getItem('workbook')) {
+        wb = XLSX.read(localStorage.getItem('workbook'), { type: 'string' });
+    } else {
+        wb = XLSX.utils.book_new();
+    }
+
+    // Get existing sheet or create a new one
+    var ws;
+    if (wb.Sheets[sheetName]) {
+        ws = wb.Sheets[sheetName];
+    } else {
+        ws = XLSX.utils.aoa_to_sheet([["Date", "Car Number Plate", "Driver Name", "Runs", "Time Out (HRS)", "Time In (HRS)", "Factory Time Out (HRS)", "Time Spent in Field (HRS & MINS)", "Time Spent in Field (MINS)", "Time Spent in Factory (HRS & MINS)", "Time Spent in Factory (MINS)", "Diversion Status"]]);
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    }
+
+    // Append new data to the sheet
+    XLSX.utils.sheet_add_dom(ws, document.getElementById('resultTable'), { origin: -1 });
+
+    // Calculate averages
+    let fieldTimes = [];
+    let factoryTimes = [];
+    for (let i = 1; i < tableBody.rows.length; i++) {
+        let row = tableBody.rows[i];
+        let fieldMins = parseInt(row.cells[8].innerText.split(' ')[0]) || 0;
+        let factoryMins = parseInt(row.cells[10].innerText.split(' ')[0]) || 0;
+        if (!isNaN(fieldMins)) fieldTimes.push(fieldMins);
+        if (!isNaN(factoryMins)) factoryTimes.push(factoryMins);
+    }
+
+    let averageFieldTimeMins = (fieldTimes.reduce((a, b) => a + b, 0) / fieldTimes.length) || 0;
+    let averageFactoryTimeMins = (factoryTimes.reduce((a, b) => a + b, 0) / factoryTimes.length) || 0;
+
+    // Append averages row
+    XLSX.utils.sheet_add_aoa(ws, [["", "", "", "", "", "", "", "", "", "Average Time Spent in Factory (MINS): " + averageFactoryTimeMins.toFixed(2), "Average Time Spent in Field (MINS): " + averageFieldTimeMins.toFixed(2)]], { origin: -1 });
+
+    // Save workbook to localStorage
+    localStorage.setItem('workbook', XLSX.write(wb, { bookType: 'xlsx', type: 'string' }));
+
+    // Export workbook
+    XLSX.writeFile(wb, 'result.xlsx');
+}
+
+        //function exportToExcel() {
+           // var wb = XLSX.utils.book_new();
+            //var ws = XLSX.utils.table_to_sheet(document.getElementById('resultTable'));
+            //XLSX.utils.book_append_sheet(wb, ws, "Results");
+            //XLSX.writeFile(wb, "Factory_Run_Tracker.xlsx");
+        //}
+    </script>
+</body>
+</html>

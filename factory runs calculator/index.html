@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Run Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Factory Run Tracker</h1>
+        <form id="runForm">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            
+            <label for="numberPlate">Car Number Plate:</label>
+            <input type="text" id="numberPlate" required>
+            
+            <label for="driverName">Driver Name:</label>
+            <input type="text" id="driverName" required>
+            
+            <label for="timeOut">Time Out (24HRS):</label>
+            <input type="time" id="timeOut" required>
+            
+            <label for="timeIn">Time In (24HRS):</label>
+            <input type="time" id="timeIn" required>
+            
+            <label for="firstRun">First Run (24HRS):</label>
+            <input type="time" id="firstRun" required>
+            
+            <label for="secondRun">Second Run (24HRS):</label>
+            <input type="time" id="secondRun" required>
+            
+            <label for="thirdRun">Third Run (24HRS):</label>
+            <input type="time" id="thirdRun" required>
+            
+            <label for="fourthRun">Fourth Run (24HRS):</label>
+            <input type="time" id="fourthRun" required>
+
+            <label for="timeOutFactory">Time Out in Factory (24HRS):</label>
+            <input type="time" id="timeOutFactory" required>
+            
+            <button type="button" onclick="calculate()">Calculate</button>
+        </form>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Car Number Plate</th>
+                    <th>Driver Name</th>
+                    <th>Time Out (24HRS)</th>
+                    <th>Time In (24HRS)</th>
+                    <th>Time In (MINS)</th>
+                    <th>First Run</th>
+                    <th>Second Run</th>
+                    <th>Third Run</th>
+                    <th>Fourth Run</th>
+                    <th>Average In Time (MINS)</th>
+                    <th>Time Out in Factory (24HRS)</th>
+                    <th>Time in Factory (HRS:MINS)</th>
+                    <th>Time in Factory (MINS)</th>
+                    <th>Average Factory Time (MINS)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be inserted here -->
+            </tbody>
+        </table>
+
+        <button onclick="exportToExcel()">Export to Excel</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

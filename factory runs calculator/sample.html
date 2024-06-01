@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sample</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <table id="timeTable">
+        <caption><input type="date" id="date" placeholder="0800 HRS"></caption>
+        <thead>
+            <tr>
+                <th>CAR NUMBER</th>
+                <th>DRIVER</th>
+                <th>TIME OUT (HRS)</th>
+                <th>TIME IN (HRS)</th>
+                <th>TIME OUT FACTORY (HRS)</th>
+                <th>TIMES IN FIELD (HRS & MINS)</th>
+                <th>TIMES IN FIELD (MIN)</th>
+                <th>TIME IN FACTORY (HRS & MINS)</th>
+                <th>TIME IN FACTORY (MIN)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="6"><input type="text" id="carnumber" placeholder="carnumber"></td> </td>
+                <td rowspan="6"><input type="text" id="driverName" placeholder="driverName"></td></td>
+                <td>1<sup>st</sup>Run
+                    <input type="text" id="timeout1" placeholder="0640 HRS"></td>
+                <td><input type="text" id="timein1" placeholder="0800 HRS"></td>
+                <td><input type="text" id="timeoutfactory1" placeholder="0900 HRS"></td>
+                <td><span id="timeinfield1">1 HRS 20 MINS</span></td>
+                <td><span id="timeinfieldmin1">140</span></td>
+                <td><input type="text" id="timeinfactory1" placeholder="1 HRS 00 MINS"></td>
+                <td><span id="timeinfactorymin1">60</span></td>
+            </tr>
+            <tr>
+                <td>2<sup>nd</sup>Run<input type="text" id="timeout2" placeholder="0900 HRS"></td>
+                <td><input type="text" id="timein2" placeholder="1100 HRS"></td>
+                <td><input type="text" id="timeoutfactory2" placeholder="1200 HRS"></td>
+                <td><span id="timeinfield2">2 HRS 00 MINS</span></td>
+                <td><span id="timeinfieldmin2">120</span></td>
+                <td></td>
+                <td><span id="timeinfactorymin2"></span></td>
+            </tr>
+            <tr>
+                <td>3<sup>rd</sup>Run<input type="text" id="timeout3"placeholder="1200HRS"></td>
+                <td><input type="text" id="timein3"></td>
+                <td><input type="text" id="timeoutfactory3"></td>
+                <td><span id="timeinfield3"></span></td>
+                <td><span id="timeinfieldmin3"></span></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>4<sup>th</sup>Run<input type="text" id="timeout4"></td>
+                <td><input type="text" id="timein4"></td>
+                <td><input type="text" id="timeoutfactory3"></td>
+                <td><span id="timeinfield3"></span></td>
+                <td><span id="timeinfieldmin3"></span></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                4<sup>th</sup>Run<td><input type="text" id="timeout4"></td>
+                <td><input type="time" id="timein4"></td>
+                <td><input type="time" id="timeoutfactory4"></td>
+                <td><span id="timeinfield4"></span></td>
+                <td><span id="timeinfieldmin4"></span></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>AVERAGE</td>
+                <td colspan="6" style="background-color: yellow;">HERE IS NEEDED</td>
+                <td style="background-color: yellow;">HERE IS NEEDED</td>
+            </tr>
+        </tbody>
+    </table>
+    <button onclick="calculateTimes()">Calculate Times</button>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factory Run Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Factory Run Tracker</h1>
+        <form id="runForm">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+            
+            <label for="numberPlate">Car Number Plate:</label>
+            <input type="text" id="numberPlate" required><br>
+            
+            <label for="driverName">Driver Name:</label>
+            <input type="text" id="driverName" required><br>
+            
+            <label for="timeOut">Time Out (HRS):</label>
+            <input type="time" id="timeOut" required>
+            
+            <label for="timeIn">Time In (HRS):</label>
+            <input type="time" id="timeIn" required>
+            
+            <label for="firstRun">Time in First Run(HRS):</label>
+            <input type="time" id="firstRun" required>
+            <label for="firstRun"> Time out First Run(HRS):</label>
+            <input type="time" id="firstRun" required><br>
+            
+            <label for="secondRun">time in Second Run(HRS):</label>
+            <input type="time" id="secondRun" required>
+            <label for="secondRun">time out Second Run(HRS):</label>
+            <input type="time" id="secondRun" required><br>
+            
+            <label for="thirdRun">time in Third Run(HRS):</label>
+            <input type="time" id="thirdRun" required>
+            <label for="thirdRun">time out Third Run(HRS):</label>
+            <input type="time" id="thirdRun" required><br>
+
+            <label for="fourthRun">time in Fourth Run(HRS):</label>
+            <input type="time" id="fourthRun" required>
+            <label for="fourthRun">time out Fourth Run(HRS):</label>
+            <input type="time" id="fourthRun" required><br>
+            
+            <label for="timeOutFactory">Time Out in Factory (HRS):</label>
+            <input type="time" id="timeOutFactory" required>
+            
+            <button type="button" onclick="calculate()">Calculate</button>
+        </form>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Car Number Plate</th>
+                    <th>Driver Name</th>
+                    <th>Time Out (HRS)</th>
+                    <th>Time In (HRS&MINS)</th>
+                    <th>First Run</th>
+                    <th>Second Run</th>
+                    <th>Third Run</th>
+                    <th>Fourth Run</th>
+                    <th>Average In Time (MINS)</th>
+                    <th>Time Out in Factory (HRS)</th>
+                    <th>Time in Factory (HRS:MINS)</th>
+                    <th>Time in Factory (MINS)</th>
+                    <th>Average Factory Time (MINS)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be inserted here -->
+            </tbody>
+        </table>
+
+        <button onclick="exportToExcel()">Export to Excel</button>
+    </div>
+
+    
+</body>
+</html>
